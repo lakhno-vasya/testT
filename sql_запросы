@@ -1,0 +1,82 @@
+                      Баланс по каждому пользователю (сумма денег по всем номерам и операторам каждого пользователя)
+                                    
+SELECT
+    u.id AS user_id,
+    u.name AS user_name,
+    SUM(ump.balance) AS total_balance
+FROM
+    users u
+LEFT JOIN
+    user_mobile_phone_balances ump ON u.id = ump.user_id
+GROUP BY
+    u.id, u.name;
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+        количество номеров телефонов по операторам (список: код оператора, кол-во номеров этого оператора);
+                                                                            
+
+
+
+
+SELECT
+    SUBSTRING(mobile_phone_number, 5, 2) AS operator_code,
+    COUNT(*) AS total_numbers
+FROM
+    user_mobile_phone_balances
+WHERE
+    SUBSTRING(mobile_phone_number, 5, 2) IN ('50', '67', '63', '68')
+GROUP BY
+    SUBSTRING(mobile_phone_number, 5, 2);
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+                    количество телефонов у каждого пользователя (список: имя пользователя, кол-во номеров у пользователя);
+
+
+
+
+SELECT
+    u.name AS user_name,
+    COUNT(ump.id) AS total_numbers
+FROM
+    users u
+LEFT JOIN
+    user_mobile_phone_balances ump ON u.id = ump.user_id
+GROUP BY
+    u.name;
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+                     вывести имена 10 пользователей с максимальным балансом на счету (максимальный баланс по одному номеру);
+
+SELECT
+    u.id,
+    u.name,
+    MAX(ump.balance) AS total_balance
+FROM
+    users u
+JOIN
+    user_mobile_phone_balances ump ON u.id = ump.user_id
+GROUP BY
+    u.id, u.name
+ORDER BY
+    total_balance DESC
+LIMIT 10;
+
+
+
+
+
